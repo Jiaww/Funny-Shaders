@@ -1,116 +1,63 @@
-# homework-3-case-study
+# Case-study CIS 566
 
-# Assignment Description
+## Overview
 
-For this assignment, you will re-create various animations demonstrating a combination of toolbox functions and the rendering techniques you've already learned. The motivation for this is to help you become more familiar with toolbox functions as well as give you experience in producing a desired aesthetic.
+In this assignment, I completed three of the intermediate examples, they are spindle of death, paw metaballs and tri-color cube. Spindle of death and paw metaballs are implemented in shadertoy, while tri-color cube is implemented in my own webgl project.
 
-Below are multiple examples of periodic animations with assigned point values. You are required to complete EITHER:
-* One intermediate animation and one hard animation
-* Three intermediate animations
-* One Duck-Level-hard animation (at the very bottom)
+Below are the results of my implementation:
+* Spindle of Death: [Link](https://www.shadertoy.com/view/Xstyz8)
 
-You have three options for implementing these:
-* Rasterizer, like homework 1
-* Raymarcher / implicit surfaces, like homework 2
-* Shadertoy (probably the easiest)
+|**My Implementation**|**Example**|
+|---|---|
+|<img src="results/spindle_of_death.gif" width="400px" />|<img src="https://media.giphy.com/media/26DN7fdyFRqfBjqMw/giphy.gif" width="400px" />|
 
-You can also implement different scenes with different methods.
+* Paw Metaballs: [Link](https://www.shadertoy.com/view/XddyzH)
 
-If you'd like to implement any animations that are not listed below, you can make a _private_ post on Piazza and we will decide if they are appropriate for the assignment, and their difficulty classification. Check [/r/loadingicon](https://www.reddit.com/r/loadingicon) on Reddit for inspiration.
+|**My Implementation**|**Example**|
+|---|---|
+|<img src="results/paw_metaballs.gif" width="400px" />|<img src="https://assets0.ello.co/uploads/asset/attachment/5159868/ello-optimized-99a5cfbf.gif" width="400px" />|
 
-*Extra Credit*: you can earn extra credit by creating interesting twists e.g. materials and animations that are not in the original reference. Since we are grading reference matching, additional features must be toggleable, either by a GUI option in your webgl site or by a #define statement in your Shadertoy code. This must be described in your writeup. Additionally, some of the references have some attributes that are exceptionally difficult, and do not need to be implemented for full credit; we will note what these are and they can count for extra credit.
+* Tri-color Cube: [Link](https://jiaww.github.io/homework-3-case-study-Jiaww/)
 
-# Submission
-
-You must submit a writeup for this assignment by 11:59 PM on Thursday, Feb. 8th to canvas *as a .pdf or .txt*. If your projects are hosted on Github you should copy your writeup to a readme.
-
-Writeups must include, for each scene:
-* A link to the online implementation
-* A link to the reference animation
-* *Detailed* description of techniques used to emulate the reference, for both motion and rendering
-* If you implement extra credit, explain what it is and how to toggle it
+|**My Implementation**|**Example**|
+|---|---|
+|<img src="results/tricolor.gif" width="400px" />|<img src="https://i.redd.it/e8dcpl3rw32z.gif" width="400px" />|
 
 
-# Evaluation
+## Implementation Details
+* Spindle of Death: 
+  * This one is really simple, it's only a combination of many **spheres** rotating on a **torus**, and each sphere rotates with a *phase difference*. When the balls are rotating, also rotate the camera, you can get the disired animation like examples. 
+  * I used rectangular projection **Ray-Marching** to create the scene.
+  * Also used this following function to control the time value, it can make a pause on each disired camera direction.
+    
+    |`float dt = max(0.0, fract(iTime*0.5)*4.0-3.0) + floor(iTime*0.5);`|
+    |---|
+    |<img src="results/graph.JPG" width="400px" />|
+    
+    <img src="https://media.giphy.com/media/26DN7fdyFRqfBjqMw/giphy.gif" width="400px" />
+    
+* Paw Metaballs:
+  * This is a 2D-version metaball animation, and after analysis it's also a combination of many very simple motions: just 8 black 2d-metaballs move outside and inside with a phase difference and diffrent directions.
+  * The realization of the metaball is also pretty easy, just use unsigned-distance function to describe each metaball, and for each pixel in the scene, compute the sum of all 8 distances, if the sum is larger than a threshold, set the color black, otherwise, set it white.
+  
+  <img src="https://assets0.ello.co/uploads/asset/attachment/5159868/ello-optimized-99a5cfbf.gif" width="400px" />
 
-Each intermediate scene is worth 1/3 credit. Difficult scenes are 2/3 credit. Duck-level scenes are worth 100% credit.
-Extra credit is at grader discretion and cannot exceed 20 points.
+* Tri-color Cube:
+  * After analysis, this is also a combination of motions, there are 4 phases:
+    * Rotate Color Anticlockwise 
+    * Rotate Cube by its x-axis Anticlockwise
+    * Rotate Color Clockwise
+    * Rotate Cube by its y-axis Clockwise
+  * Here I used Rasterizer to realize it, because the colors of the cube's faces are different and they are rotate with the cube, it's really hard to realize it using Ray-Marching.
+  * I seperate the motions into 2 groups: Rotate Color and Rotate Cube
+    * Rotate Cube is easy to implement, just set a rotation matrix to rotate the cube in 3D place
+    * Rotate Color is a little bit tricky: (You can look the how the trick done by uncheck the trick trigger)
+      * Firstly, create a mask which is a hexagon with the same size of the cube in pixel space, and we only render what inside of this area.
+      * Secondly, scale the cube double to make it's rotation can cover all area of the hexagon.
+      * Then, rotate the cube by its diagonal, which can make it like only rotate the color because we only render what inside of the hexgon.
+      * Finally, scale the cube to its original size for the following rotate cube motion.
+      
+  <img src="https://i.redd.it/e8dcpl3rw32z.gif" width="400px" />
 
-*If we cannot view your work online it will receive no credit.*
 
-All shaders will be graded by this scheme:
-* 65% Reference matching: does this show understanding of the motion, colors, and rendering techniques required to create the animation? This does not have to be pixel-perfect for full credit.
-* 20% Writeup completeness
-* 15% Performance considerations: motion should be fluid, ideally no less than 30 FPS at Shadertoy-resolution on a gaming laptop. If your shader (without EC) is seriously under-performant there will be a point penalty.
-
-# References: Intermediate Difficulty
-
-## Sweet Swing
-<img src="Images/sweetSwing.gif" width="400px" />
-
-#### Extra credit:
-- Convincing materials, rendering, textures
-
-## Cut Cube
-<img src="https://i.imgur.com/sZa2PPI.gif" width="400px" />
-
-## Speedy Spin OR Speedy Cube
-<img src="https://i.imgur.com/AI00mHu.gif" width="400px" />
-<img src="https://i.imgur.com/Ltm5xjD.gif" width="400px" />
-
-#### Notes:
-- Motion blur is required, *not* extra credit
-
-## Paw Metaballs
-<img src="https://assets0.ello.co/uploads/asset/attachment/5159868/ello-optimized-99a5cfbf.gif" width="400px" />
-
-#### Notes:
-- Smooth blending during separation and joining of blobs is required
-
-## Tri-Colored Cube
-<img src="https://i.redd.it/e8dcpl3rw32z.gif" width="400px" />
-
-## Spindle of Death
-<img src="https://media.giphy.com/media/26DN7fdyFRqfBjqMw/giphy.gif" width="400px" />
-
-# References: Hard Difficulty
-
-## Electron Orbitals
-<img src="http://i.imgur.com/MNw0Vrm.gif" width="400px" />
-
-## Rainbow Step Cube
-<img src="https://78.media.tumblr.com/a5fc5d607e40fe345f5ba6e10fbb21a3/tumblr_or5m8jLTtd1r65ii5o1_500.gif" width="400px" />
-
-#### Notes:
-- Height variation is required in the extrustions
-
-## Bubbling Beaker
-<img src="https://d13yacurqjgara.cloudfront.net/users/318273/screenshots/2029648/verve_lab_dribbble.gif" width="400px" />
-
-## Chocolate-Loving Shark
-<img src="https://i.imgur.com/ClgFpAW.gif" width="400px" />
-
-#### Notes:
-- Soft shadows required
-
-#### Extra Credit:
-- Depth of field (screenspace, IQ has examples)
-
-## GameCube Loading Screen
-<img src="Images/gameCubeLogo.gif" width="400px" />
-
-#### Notes:
-- No text required
-
-# Reference: Duck Level Difficulty
-<img src="http://i.imgur.com/0kvtMLE.gif" width="400px" />
-
-#### Specifications:
-_good luck, duck!_
-- Modelling the duck
-- Head Bob
-- Tail Wag
-- Match the movement of the feet
-- Shading of the duck
-- Fake shadows as circles
 
