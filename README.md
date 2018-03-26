@@ -17,7 +17,7 @@ Below are the results of my implementation:
 |---|---|
 |<img src="results/paw_metaball.gif" width="400px" />|<img src="https://assets0.ello.co/uploads/asset/attachment/5159868/ello-optimized-99a5cfbf.gif" width="400px" />|
 
-* Tri-color Cube: [Link](https://jiaww.github.io/homework-3-case-study-Jiaww/)
+* Tri-color Cube: [Link](https://jiaww.github.io/Funny-Shaders/)
 
 |**My Implementation**|**Example**|
 |---|---|
